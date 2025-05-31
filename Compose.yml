@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: db
+    environment:
+      - POSTGRES_DB=programa-Service
+      - POSTGRES_USER=devdb
+      - POSTGRES_PASSWORD=a1b2c3d4
+    ports:
+      - '5432:5432'
+    networks:
+      - red-backend-app
+
+  programa-service:
+    image: 'ManuelTabares/programa-service:latest'
+    container_name: programa-service
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=jdbc:postgresql://postgres:5432/Programa-Service
+      - DB_USER=devdb
+      - DB_PASS=a1b2c3d4
+      - JPA_DDL=create-drop
+    profiles:
+      - app
+    networks:
+      - red-backend-app
+
+networks:
+  red-backend-app:
+    driver: bridge
